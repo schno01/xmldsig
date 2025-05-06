@@ -4,6 +4,8 @@ namespace Selective\XmlDSig;
 
 use EllipticCurve\Ecdsa;
 use EllipticCurve\PrivateKey;
+use phpseclib3\Crypt\PublicKeyLoader;
+use phpseclib3\Crypt\RSA;
 use Selective\XmlDSig\Exception\CertificateException;
 use Selective\XmlDSig\Exception\XmlSignerException;
 use UnexpectedValueException;
@@ -41,7 +43,15 @@ final class CryptoSigner implements CryptoSignerInterface
         }
 
         // Calculate and encode digest value
-        $status = openssl_sign($data, $signatureValue, $privateKey, $this->algorithm->getSignatureSslAlgorithm());
+        if($this->algorithm->getSignatureAlgorithmName() === Algorithm::METHOD_SHA256_MGF1 || $this->algorithm->getSignatureAlgorithmName() === Algorithm::METHOD_SHA512_MGF1) {
+            openssl_pkey_export($privateKey,$privkey);
+            $privateKey = PublicKeyLoader::load($privkey);
+            $privateKey = $privateKey->withHash($this->algorithm->getDigestAlgorithmName())->withMGFHash($this->algorithm->getDigestAlgorithmName())->withPadding(RSA::ENCRYPTION_OAEP);
+            $signatureValue = $privateKey->sign($data);
+            $status = 1;
+        }else{
+            $status = openssl_sign($data, $signatureValue, $privateKey, $this->algorithm->getSignatureSslAlgorithm());
+        }
 
         if (!$status) {
             throw new XmlSignerException('Computing of the signature failed');
