@@ -17,6 +17,8 @@ final class Algorithm
     public const SIGNATURE_SHA384_URL = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384';
     public const SIGNATURE_SHA512_URL = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha512';
     public const SIGNATURE_ECDSA_SHA256_URL = 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256';
+    public const SIGNATURE_SHA256_MGF1_URL = 'http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1';
+    public const SIGNATURE_SHA512_MGF1_URL = 'http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1';
 
     //
     // OpenSSL digest methods
@@ -28,6 +30,8 @@ final class Algorithm
     public const METHOD_SHA384 = 'sha384';
     public const METHOD_SHA512 = 'sha512';
     public const METHOD_ECDSA_SHA256 = 'ecdsa-with-SHA256';
+    public const METHOD_SHA256_MGF1 = 'sha256MGF1';
+    public const METHOD_SHA512_MGF1 = 'sha512MGF1';
 
     //
     // Digest Algorithm Identifiers
@@ -94,6 +98,14 @@ final class Algorithm
                 $this->signatureAlgorithmUrl = self::SIGNATURE_ECDSA_SHA256_URL;
                 $this->signatureSslAlgorithm = 0;
                 break;
+            case self::METHOD_SHA256_MGF1:
+                $this->signatureAlgorithmUrl = self::SIGNATURE_SHA256_MGF1_URL;
+                $this->signatureSslAlgorithm = OPENSSL_ALGO_SHA256;
+                break;
+            case self::METHOD_SHA512_MGF1:
+                $this->signatureAlgorithmUrl = self::SIGNATURE_SHA512_MGF1_URL;
+                $this->signatureSslAlgorithm = OPENSSL_ALGO_SHA512;
+                break;
             default:
                 throw new UnexpectedValueException(sprintf('Unsupported algorithm: %s>', $algorithm));
         }
@@ -126,6 +138,17 @@ final class Algorithm
                 break;
             case self::METHOD_ECDSA_SHA256:
                 $this->digestAlgorithmUrl = self::DIGEST_ECDSA_SHA256_URL;
+                break;
+            case self::METHOD_ECDSA_SHA256:
+                $this->digestAlgorithmUrl = self::DIGEST_ECDSA_SHA256_URL;
+                break;
+            case self::METHOD_SHA256_MGF1:
+                $this->digestAlgorithmUrl = self::DIGEST_SHA256_URL;
+                $algorithm = self::METHOD_SHA256;
+                break;
+            case self::METHOD_SHA512_MGF1:
+                $this->digestAlgorithmUrl = self::DIGEST_SHA512_URL;
+                $algorithm = self::METHOD_SHA512;
                 break;
             default:
                 throw new XmlSignerException("Cannot validate digest: Unsupported algorithm <$algorithm>");
