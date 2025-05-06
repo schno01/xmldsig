@@ -12,6 +12,7 @@
 * Sign XML Documents with Digital Signatures ([XMLDSIG](https://www.w3.org/TR/xmldsig-core/))
 * Verify the Digital Signatures of XML Documents
 * ECDSA (SHA256) signature
+* Added Support for http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1
 
 ## Requirements
 
@@ -22,7 +23,7 @@
 ## Installation
 
 ```
-composer require selective/xmldsig
+composer require schno01/xmldsig
 ```
 
 ## Usage
