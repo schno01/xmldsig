@@ -100,6 +100,7 @@ final class XmlSigner
      */
     private function appendSignature(DOMDocument $xml, string $digestValue): void
     {
+		
         $signatureElement = $xml->createElement('Signature');
         $signatureElement->setAttribute('xmlns', 'http://www.w3.org/2000/09/xmldsig#');
 
@@ -116,7 +117,8 @@ final class XmlSigner
         $signatureElement->appendChild($signedInfoElement);
 
         $canonicalizationMethodElement = $xml->createElement('CanonicalizationMethod');
-        $canonicalizationMethodElement->setAttribute('Algorithm', 'http://www.w3.org/TR/2001/REC-xml-c14n-20010315');
+        $canonicalizationMethodElement->setAttribute('Algorithm', 'http://www.w3.org/2001/10/xml-exc-c14n#'); // NEEDED FOR Shibboleth SAML
+		
         $signedInfoElement->appendChild($canonicalizationMethodElement);
 
         $signatureMethodElement = $xml->createElement('SignatureMethod');
@@ -136,6 +138,10 @@ final class XmlSigner
         // Enveloped: the <Signature> node is inside the XML we want to sign
         $transformElement = $xml->createElement('Transform');
         $transformElement->setAttribute('Algorithm', 'http://www.w3.org/2000/09/xmldsig#enveloped-signature');
+        $transformsElement->appendChild($transformElement);
+		
+		$transformElement = $xml->createElement('Transform');
+        $transformElement->setAttribute('Algorithm', 'http://www.w3.org/2001/10/xml-exc-c14n#'); // NEEDED FOR Shibboleth SAML
         $transformsElement->appendChild($transformElement);
 
         $digestMethodElement = $xml->createElement('DigestMethod');
@@ -177,6 +183,7 @@ final class XmlSigner
 
         // http://www.soapclient.com/XMLCanon.html
         $c14nSignedInfo = $signedInfoElement->C14N(true, false);
+	
 
         $signatureValue = $this->cryptoSigner->computeSignature($c14nSignedInfo);
 

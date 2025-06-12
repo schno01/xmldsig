@@ -46,9 +46,10 @@ final class CryptoSigner implements CryptoSignerInterface
         if($this->algorithm->getSignatureAlgorithmName() === Algorithm::METHOD_SHA256_MGF1 || $this->algorithm->getSignatureAlgorithmName() === Algorithm::METHOD_SHA512_MGF1) {
             openssl_pkey_export($privateKey,$privkey);
             $privateKey = PublicKeyLoader::load($privkey);
-            $privateKey = $privateKey->withHash($this->algorithm->getDigestAlgorithmName())->withMGFHash($this->algorithm->getDigestAlgorithmName())->withPadding(RSA::ENCRYPTION_OAEP);
+            $privateKey = $privateKey->withHash($this->algorithm->getDigestAlgorithmName())->withMGFHash($this->algorithm->getDigestAlgorithmName())->withPadding(RSA::SIGNATURE_PSS);
+			
             $signatureValue = $privateKey->sign($data);
-            $status = 1;
+            $status = $privateKey->getPublicKey()->verify($data, $signatureValue);
         }else{
             $status = openssl_sign($data, $signatureValue, $privateKey, $this->algorithm->getSignatureSslAlgorithm());
         }
