@@ -99,10 +99,12 @@ final class Algorithm
                 $this->signatureSslAlgorithm = 0;
                 break;
             case self::METHOD_SHA256_MGF1:
+            case self::SIGNATURE_SHA256_MGF1_URL:
                 $this->signatureAlgorithmUrl = self::SIGNATURE_SHA256_MGF1_URL;
                 $this->signatureSslAlgorithm = OPENSSL_ALGO_SHA256;
                 break;
             case self::METHOD_SHA512_MGF1:
+            case self::SIGNATURE_SHA512_MGF1_URL:
                 $this->signatureAlgorithmUrl = self::SIGNATURE_SHA512_MGF1_URL;
                 $this->signatureSslAlgorithm = OPENSSL_ALGO_SHA512;
                 break;
