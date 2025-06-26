@@ -141,14 +141,13 @@ final class Algorithm
             case self::METHOD_ECDSA_SHA256:
                 $this->digestAlgorithmUrl = self::DIGEST_ECDSA_SHA256_URL;
                 break;
-            case self::METHOD_ECDSA_SHA256:
-                $this->digestAlgorithmUrl = self::DIGEST_ECDSA_SHA256_URL;
-                break;
             case self::METHOD_SHA256_MGF1:
+            case self::SIGNATURE_SHA256_MGF1_URL:
                 $this->digestAlgorithmUrl = self::DIGEST_SHA256_URL;
                 $algorithm = self::METHOD_SHA256;
                 break;
             case self::METHOD_SHA512_MGF1:
+            case self::SIGNATURE_SHA512_MGF1_URL:
                 $this->digestAlgorithmUrl = self::DIGEST_SHA512_URL;
                 $algorithm = self::METHOD_SHA512;
                 break;
