@@ -43,11 +43,11 @@ final class CryptoSigner implements CryptoSignerInterface
         }
 
         // Calculate and encode digest value
-        if($this->algorithm->getSignatureAlgorithmName() === Algorithm::METHOD_SHA256_MGF1 || $this->algorithm->getSignatureAlgorithmName() === Algorithm::METHOD_SHA512_MGF1) {
+        if($this->algorithm->getSignatureAlgorithmName() === Algorithm::METHOD_SHA256_MGF1 || $this->algorithm->getSignatureAlgorithmName() === Algorithm::METHOD_SHA512_MGF1 || $this->algorithm->getSignatureAlgorithmName() === Algorithm::SIGNATURE_SHA256_MGF1_URL || $this->algorithm->getSignatureAlgorithmName() === Algorithm::SIGNATURE_SHA512_MGF1_URL) {
             openssl_pkey_export($privateKey,$privkey);
             $privateKey = PublicKeyLoader::load($privkey);
             $privateKey = $privateKey->withHash($this->algorithm->getDigestAlgorithmName())->withMGFHash($this->algorithm->getDigestAlgorithmName())->withPadding(RSA::SIGNATURE_PSS);
-			
+
             $signatureValue = $privateKey->sign($data);
             $status = $privateKey->getPublicKey()->verify($data, $signatureValue);
         }else{
